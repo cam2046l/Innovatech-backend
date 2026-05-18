@@ -1,9 +1,13 @@
 FROM maven:3.8-eclipse-temurin-17 AS builder
 #una
 WORKDIR /app
-COPY pom.xml .
+
+COPY Springboot-API-REST/pom.xml .
+
 RUN mvn dependency:go-offline -B
-COPY src ../Springboot-API-REST/src
+
+COPY Springboot-API-REST/src ./src
+
 RUN mvn clean package -DskipTests -B
 
 FROM eclipse-temurin:17-jre-alpine
