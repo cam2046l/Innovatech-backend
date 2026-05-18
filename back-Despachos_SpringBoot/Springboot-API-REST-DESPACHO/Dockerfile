@@ -8,13 +8,14 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-RUN groupadd -r cittgroup && useradd -r -g cittgroup cittuser
-USER cittuser
+RUN addgroup -S cittgroup && adduser -S cittuser -G cittgroup
 
-COPY --from=build /app/target/*.jar app.jar
+COPY --chown=cittuser:cittgroup --from=build /app/target/*.jar app.jar
+
+USER cittuser
 
 ENV DB_PORT=3306 \
     DB_NAME=bd_despachos \
