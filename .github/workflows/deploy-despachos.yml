@@ -40,19 +40,19 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: 5. Desplegar en EC2 Privada vía AWS SSM
+      - name: 5. Desplegar en EC2 vía AWS SSM
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: latest
         run: |
-          aws ssm send-command \
-            --instance-ids "${{ env.EC2_INSTANCE_ID }}" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Despliegue de MS Despachos" \
-            --parameters commands=[ \
-              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin $ECR_REGISTRY", \
-              "docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG", \
-              "docker stop ms-despachos-citt || true", \
-              "docker rm ms-despachos-citt || true", \
-              "docker run -d --name ms-despachos-citt -p 8081:8081 --restart always -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
-            ]
+            aws ssm send-command \
+              --instance-ids "${{ env.EC2_INSTANCE_ID }}" \
+              --document-name "AWS-RunShellScript" \
+              --comment "Despliegue Despachos" \
+              --parameters "commands=[
+                \"aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin $ECR_REGISTRY\",
+                \"sudo docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG\",
+                \"sudo docker stop ms-despachos-citt || true\",
+                \"sudo docker rm ms-despachos-citt || true\",
+                \"sudo docker run -d --name ms-despachos-citt -p 8081:8081 --restart always -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG\"
+              ]"
