@@ -6,6 +6,7 @@ on:
       - deploy
     paths:
       - 'back-Ventas_SpringBoot/**'
+      - '.github/workflows/deploy-ventas.yml'
 
 env:
   AWS_REGION: us-east-1

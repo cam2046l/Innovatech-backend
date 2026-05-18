@@ -6,6 +6,7 @@ on:
       - deploy
     paths:
       - 'back-Despachos_SpringBoot/**'
+      - '.github/workflows/deploy-despachos.yml'
 
 env:
   AWS_REGION: us-east-1
