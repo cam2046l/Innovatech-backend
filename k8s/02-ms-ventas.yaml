@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ventas-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ms-ventas
+  template:
+    metadata:
+      labels:
+        app: ms-ventas
+    spec:
+      containers:
+        - name: ms-ventas
+          image: 137700910242.dkr.ecr.us-east-1.amazonaws.com/innovatech-ventas
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://db-service:3306/bd_despachos"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "Despacho1"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: innovatech-db-secrets
+                  key: mysql-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ventas-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: ms-ventas
+  type: ClusterIP

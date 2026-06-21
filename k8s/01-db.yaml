@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: innovatech-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: innovatech-db
+  template:
+    metadata:
+      labels:
+        app: innovatech-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          args: ["--default-authentication-plugin=mysql_native_password", "--bind-address=0.0.0.0"]
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: "bd_despachos"
+            - name: MYSQL_USER
+              value: "Despacho1"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: innovatech-db-secrets
+                  key: mysql-password
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: "yes"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service # <--- Este nombre será el HOST de conexión para tu Backend
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: innovatech-db
+  type: ClusterIP
