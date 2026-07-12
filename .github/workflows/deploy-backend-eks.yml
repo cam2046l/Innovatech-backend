@@ -33,13 +33,15 @@ jobs:
       - name: 4. Construir y Subir MS Ventas
         run: |
           cd back-Ventas_SpringBoot/
-          docker build -t ${{ env.ECR_REGISTRY }}/innovatech-ventas:latest -f Dockerfile .
+          docker build -t ${{ env.ECR_REGISTRY }}/innovatech-ventas:${{ github.sha }} -t ${{ env.ECR_REGISTRY }}/innovatech-ventas:latest -f Dockerfile .
+          docker push ${{ env.ECR_REGISTRY }}/innovatech-ventas:${{ github.sha }}
           docker push ${{ env.ECR_REGISTRY }}/innovatech-ventas:latest
 
       - name: 5. Construir y Subir MS Despachos
         run: |
           cd back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-          docker build -t ${{ env.ECR_REGISTRY }}/innovatech-despachos:latest -f Dockerfile .
+          docker build -t ${{ env.ECR_REGISTRY }}/innovatech-despachos:${{ github.sha }} -t ${{ env.ECR_REGISTRY }}/innovatech-despachos:latest -f Dockerfile .
+          docker push ${{ env.ECR_REGISTRY }}/innovatech-despachos:${{ github.sha }}
           docker push ${{ env.ECR_REGISTRY }}/innovatech-despachos:latest
 
       - name: 6. Conectar GitHub Actions al Clúster EKS
