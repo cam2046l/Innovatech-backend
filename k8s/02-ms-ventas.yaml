@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ms-ventas
-          image: 137700910242.dkr.ecr.us-east-1.amazonaws.com/innovatech-ventas
+          image: 522965979796.dkr.ecr.us-east-1.amazonaws.com/innovatech-ventas
           ports:
             - containerPort: 8080
           resources:

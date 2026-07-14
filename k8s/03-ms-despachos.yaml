@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ms-despachos
-          image: 137700910242.dkr.ecr.us-east-1.amazonaws.com/innovatech-despachos
+          image: 522965979796.dkr.ecr.us-east-1.amazonaws.com/innovatech-despachos
           ports:
             - containerPort: 8081
           resources:
